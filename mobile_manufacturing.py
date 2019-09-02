@@ -55,13 +55,60 @@ class ManufactureMobile():
         except ValueError as ve:
             raise ValueError(ve)
 
+    """
+        merge_sort_tasks()-function sorts the task list based on the manufacture and assemble time
+        it uses the merge sort algorithm. 
+        the complexity of the runtime for this function is O(nlogn).
+    """
+    def merge_sort_tasks(self, arr):
+        if len(arr) > 1: # Return condition: Checking the size of the array should be more than 1
+            mid = len(arr)//2
+            left = arr[:mid]
+            right = arr[mid:]
+            # Recursive call with left and right split of array
+            self.merge_sort_tasks(left)
+            self.merge_sort_tasks(right)
+            
+            i=j=k=0
+            
+            while i < len(left) and j < len(right):
+                # whenever left element manufacture time is lesser than the right element manufacture time then 
+                # add the left item first
+                if left[i].manufacture_time < right[j].manufacture_time: 
+                    arr[k] = left[i]
+                    i+=1
+                elif left[i].manufacture_time == right[j].manufacture_time: # When the left & right elements manufacture time are same then go for assemble time
+                    if left[i].assemble_time < right[j].assemble_time: # if right assemble time is larger than the left then move the right element.
+                        arr[k] = right[j]
+                        j+=1
+                    else:
+                        arr[k] = left[i]
+                        i+=1
+                else: # When right elements manufacture time is larger
+                    arr[k] = right[j]
+                    j+=1
+                k+=1
 
+            # Left iteration happens only when the index is still lesser than the length of left split.
+            while i < len(left):
+                arr[k] = left[i]
+                i += 1
+                k += 1
+            # right iteration happens only when the index is still lesser than the length of right split.
+            while j < len(right):
+                arr[k] = right[j]
+                j += 1
+                k += 1
+    
+    
     """
         Schedule function does the scheduling activity of the tasks given 
     """
     def schedule(self):
         # 1. sort the tasks in based on the total production time in increasing order
-        task_list = sorted(self.tasks, key=lambda el: el.manufacture_time)        
+        task_list = self.tasks[:]
+        # Invoking merge sort function to sort the tasks
+        self.merge_sort_tasks(task_list)        
         logger.debug("Sorted jobs {0}".format(task_list))
         
         job_sequence = list()
@@ -139,7 +186,8 @@ if __name__ == '__main__':
         mobile_manufacture = ManufactureMobile(input_file, output_file)
         # Invoking the schedule method to find the optimized schedule of tasks
         mobile_manufacture.schedule()
+        # mobile_manufacture.sort_test()
         # Final message on the program completion
-        logger.info("\n"+"==="*35+"\nProgram has successfully completed the execution. Please check the /output/OutputPS1.txt file\n"+"==="*35)
+        logger.info("\n"+"==="*25+"\nProgram has successfully completed the execution.\nPlease check the /output/OutputPS1.txt file.\n"+"==="*25)
     except Exception as ex:
         logger.error("Exception occured in the program.<{0}>".format(ex))
