@@ -110,34 +110,32 @@ class ManufactureMobile():
         # Invoking merge sort function to sort the tasks
         self.merge_sort_tasks(task_list)        
         logger.debug("Sorted jobs {0}".format(task_list))
-        
+        self.write_result(self.__get_runtime_idle_ass(task_list))
+
+    """
+        Extract Total run time and wait time in units 
+    """
+    def __get_runtime_idle_ass(self,arr):
+        run_time=0
+        idle_time=0
+        ass_time=0
+        lag = 0
         job_sequence = list()
-        idle_time = 0
-        assemble_time = 0
-        production_time = 0
+        for i in range(0, len(arr)):
+            job_sequence.append(arr[i].task_id)
+            run_time += arr[i].manufacture_time  # manufacturing unit runs in sequence also its current scale for run time
+            diff = run_time - (idle_time + ass_time)  # compute the difference in assembly time of previous values
+            if( diff > 0):                            #  +ve means add to idle time
+                idle_time += diff                     #  -ve means its a carry forward lagg
+                lag = 0
+            else:
+                lag = -diff
+            ass_time += arr[i].assemble_time
 
-        # Iterate through the sorted task
-        for i in range(0, len(self.tasks)):
-            # Add the task to job sequence list
-            job_sequence.append(task_list[i].task_id)
-            # Find the difference between the task manufacture time with previous task assemble time
-            # This will give an idle time of assembly unit
-            idle_time += int(task_list[i].manufacture_time - assemble_time)
+        total_time = run_time + lag + arr[len(arr)-1].assemble_time
+        logger.debug("Sequence list: {0}, Idle : {1}, Prod Time: {2}".format(job_sequence, idle_time, total_time))
 
-            logger.debug("Idle time {0}={1}".format(int(task_list[i].manufacture_time - assemble_time), idle_time))
-           
-            # Assigning the current task assemble time for calculating the idle time.
-            assemble_time = task_list[i].assemble_time
-            # Sum of tasks assemble time and idle time gives total production time.
-            production_time += assemble_time + idle_time
-
-        logger.debug("Sequence list: {0}, Idle : {1}, Prod Time: {2}".format(job_sequence, idle_time, production_time))
-        # Printing the result in a text file
-        resultset = (job_sequence,  production_time, idle_time)
-        # Invocation of write to file method
-        self.write_result(resultset)
-
-
+        return (job_sequence, total_time, idle_time)
 
     def write_result(self, resultset):
         try:
@@ -175,7 +173,7 @@ class ManufactureMobile():
 
 if __name__ == '__main__':
     # Setting the log level as debug will make the program to print the debug statements
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     # Input file name
     input_file = "./input/InputPS1.txt"

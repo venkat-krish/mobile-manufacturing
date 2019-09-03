@@ -1,3 +1,3 @@
 Mobiles should be produced in the order: [2, 5, 6, 7, 1, 4, 8, 3] 
-Total production time for all mobiles is: 23 
-Idle Time of Assembly unit: 0 
+Total production time for all mobiles is: 38 
+Idle Time of Assembly unit: 1 
