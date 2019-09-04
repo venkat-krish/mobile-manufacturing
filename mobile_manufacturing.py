@@ -101,14 +101,14 @@ class ManufactureMobile():
                 k += 1
     
     
-    """
+    """"
         Schedule function does the scheduling activity of the tasks given 
     """
     def schedule(self):
         # 1. sort the tasks in based on the total production time in increasing order
         task_list = self.tasks[:]
         # Invoking merge sort function to sort the tasks
-        self.merge_sort_tasks(task_list)        
+        self.merge_sort_tasks(task_list)
         logger.debug("Sorted jobs {0}".format(task_list))
         self.write_result(self.__get_runtime_idle_ass(task_list))
 
@@ -137,6 +137,9 @@ class ManufactureMobile():
 
         return (job_sequence, total_time, idle_time)
 
+    """
+        write_result() - it converts the output into resultant messages.
+    """
     def write_result(self, resultset):
         try:
             self.__clear_output() # Flush out the old result in the output file
@@ -173,7 +176,7 @@ class ManufactureMobile():
 
 if __name__ == '__main__':
     # Setting the log level as debug will make the program to print the debug statements
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     # Input file name
     input_file = "./input/InputPS1.txt"
@@ -184,7 +187,7 @@ if __name__ == '__main__':
         mobile_manufacture = ManufactureMobile(input_file, output_file)
         # Invoking the schedule method to find the optimized schedule of tasks
         mobile_manufacture.schedule()
-        # mobile_manufacture.sort_test()
+
         # Final message on the program completion
         logger.info("\n"+"==="*25+"\nProgram has successfully completed the execution.\nPlease check the /output/OutputPS1.txt file.\n"+"==="*25)
     except Exception as ex:
