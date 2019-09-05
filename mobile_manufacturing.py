@@ -75,11 +75,11 @@ class ManufactureMobile():
         the complexity of the runtime for this function is O(nlogn).
     """
     def merge_sort_tasks(self, task_list):
-        if len(task_list) > 1: # Return condition: Checking the size of the task_listay should be more than 1
+        if len(task_list) > 1: # Return condition: Checking the size of the task_list should be more than 1
             mid = len(task_list)//2
             left = task_list[:mid]
             right = task_list[mid:]
-            # Recursive call with left and right split of task_listay
+            # Recursive call with left and right split of task_list
             self.merge_sort_tasks(left)
             self.merge_sort_tasks(right)
             
